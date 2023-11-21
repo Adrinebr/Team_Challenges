@@ -71,9 +71,9 @@ def situar_barco(bote: Barco, tablero: Tablero):
 
         if tablero[fila, col] == agua:
             if orientacion == 'N':
-                #if fila - (bote.len - 1) < 0:
-                    #Si fila - (barco.len -1) es menor que 0 significa que el barco  está en el lado norte del tablero
-                 #   continue
+                if fila - (bote.len - 1) < 0:
+                    ## No hay sitio para poner el barco, asi que situado sigue devolviendo False y el bucle vuelve a empezar y asigna otra orientacion
+                    continue
                 else: #comprobar si el barco puede situarse
                     for celda in range(bote.len):
                         if tablero[fila-celda, col] == agua:
@@ -106,7 +106,7 @@ def situar_barco(bote: Barco, tablero: Tablero):
                             bote.coordenadas.append([fila, col+celda]) 
                         break
                     
-            if orientacion == 'S':
+            elif orientacion == 'S':
                 
                 if fila + (bote.len -1) > medida_tablero-1:
                     continue
