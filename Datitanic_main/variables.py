@@ -1,8 +1,8 @@
 #Variables constantes del juego que serán utilizadas para el diseño de programación del juego
-agua = "~"
+agua = "°"
 barco = 'B'
 barco_tocado = "X"
-disparo_al_mar = '^'
+disparo_al_mar = '!'
 medida_tablero= 10
 
 ##Diccionario para crear los barcos 
