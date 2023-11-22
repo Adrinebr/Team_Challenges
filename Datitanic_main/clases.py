@@ -14,9 +14,10 @@ class Jugador:
 
 class Tablero:
     '''
-    Definición de una clase con dos atributos:
-    - Uno son las medidas del trablero
-    - El segundo es la creación del propio tablero relleno con la variable agua
+    Definición de una clase con un atributo:
+    - medidas del trablero
+    Y un método:
+    - creación del propio tablero relleno con la variable agua
     '''
     def __init__(self, medida = var.medida_tablero):
 ## medida_tablero que es una variable constante
