@@ -1,3 +1,6 @@
+import numpy as np
+import variables as var
+
 #definición de las clases
 class Jugador:
     '''
@@ -15,12 +18,12 @@ class Tablero:
     - Uno son las medidas del trablero
     - El segundo es la creación del propio tablero relleno con la variable agua
     '''
-    def __init__(self, medida = medida_tablero):
+    def __init__(self, medida = var.medida_tablero):
 ## medida_tablero que es una variable constante
-        self.medida = (medida_tablero, medida_tablero)
+        self.medida = (var.medida_tablero, var.medida_tablero)
         
     def crear_tablero():
-        return np.full((medida_tablero, medida_tablero), agua)
+        return np.full((var.medida_tablero, var.medida_tablero), var.agua)
 ## crear np array y rellenado de agua donde no van a estar los barcos
     
 class Barco:
@@ -29,6 +32,6 @@ class Barco:
     '''
     def __init__(self, nombre, tipo):
         self.nombre = nombre
-        self.len = barcos[tipo][1]
+        self.len = var.barcos[tipo][1]
         self.coordenadas = []
         

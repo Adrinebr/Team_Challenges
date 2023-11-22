@@ -1,16 +1,12 @@
 
-
-lado = 10
-agua = "~"
-barco = "O"
+#Variables constantes del juego que serán utilizadas para el diseño de programación del juego
+agua = " "
+barco = 'O'
 barco_tocado = "X"
-orientaciones = ["N","S", "O", "E"]
-vidas = 10
+disparo_al_mar = '~'
+medida_tablero= 10
+orientaciones = ['N', 'E', 'S', 'O']
 
-dic_barcos = {4 : 1, 
-              3 : 2, 
-              2 : 3,
-              1 : 4
-}
-
-lista_barcos = [1,1,1,1,2,2,2,3,3,4]
+##Diccionario para crear los barcos 
+## (x,y) -> x por numero de barcos de este tipo, y por eslora
+barcos = {"Barco de 1 de eslora": (4, 1), "Barco de 2 de eslora" : (3, 2), "Barco de 3 de eslora": (2, 3), "Barco de 4 de eslora" : (1, 4)}

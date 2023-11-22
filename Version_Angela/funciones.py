@@ -13,7 +13,7 @@ def coloca_barco(tablero,barco):
         tablero[pieza] = "O"
     return tablero
 
-def coloca_barco_aleatorio(tablero, barcos): 
+def coloca_barco_aleatorio(tablero, var.lista_barcos):
     ''' 
     Hay que modificar la función para que incluya los 10 barcos que queremos. 
     Antes del while, incluir un for que recorra los barcos definidos
@@ -60,6 +60,9 @@ def coloca_barco_aleatorio(tablero, barcos):
             else:
                 continue
 
+
+
+
 def dispara(tablero, coordenada):
     if tablero[coordenada] == "O":
         tablero[coordenada] = "X"
@@ -73,3 +76,5 @@ def dispara(tablero, coordenada):
 def generar_id_jugador ():
     id_jugador = str(uuid.uuid1())[:8]
     return id_jugador
+
+
