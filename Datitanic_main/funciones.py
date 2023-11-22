@@ -9,12 +9,12 @@ def disparo(jugador: cl.Jugador, tablero: cl.Tablero): #función para declarar u
         while True:#Bucle para cerciorarse de que las coords están dentro del tablero
             while True:#Bucle para cerciorarse de que las coordenadas escritas tienen sentido dentro de la lógica del juego
                 try:
-                    fila, col = [int(coord) for coord in input("Por favor, escribe unas coordenadas (separadas por un espacio) para poder disparar").split()]
+                    fila, col = [int(coord) for coord in input("Por favor, escribe unas coordenadas (separadas por un espacio) para poder disparar ->").split()]
                     break #salida del segundo while
                 except ValueError:
                     print("Es posible que usted haya incorporado una coma o otra simbolo para separar las coordenadas. Por favor, vuelve a intentar de nuevo con coordenadas entre 0 y 9, sepradas por un espacio")
             if (fila < 0 or fila > 9) or (col < 0 or col > 9):
-                print("Las coordenadas introducidas están fuera del tablero")
+                print("Las coordenadas introducidas están fuera del tablero","\n")
             else:
                 break #salida del primer while
                 
@@ -23,22 +23,19 @@ def disparo(jugador: cl.Jugador, tablero: cl.Tablero): #función para declarar u
         col = random.randint(0,var.medida_tablero-1)
     
     if tablero[fila, col] == var.barco: ##se aplica a los 2 tipos de jugador
-        print("BINGO: BARCO TOCADO")
+        print("BINGO: BARCO TOCADO", "\n")
         tablero[fila, col] = var.barco_tocado #Barco tocado será representado con X en dicha fila y columna
-        if var.barco not in barco:#Si no hay más barcos sobre el tablero que declare el final del juego y el ganador 
-            ''' 
-            Ángela --> Esto no sería barco in tablero?????
-            '''
+        if var.barco not in var.barco:#Si no hay más barcos sobre el tablero que declare el final del juego y el ganador
             fin_juego()
         #Si no, y hay barcos todavía, sigue la partida
         disparo(jugador, tablero)
         
     elif tablero[fila, col] == var.agua: #Disparo al mar
-        print("El Disparo se ha caido en el agua")
+        print("El Disparo se ha caido en el agua", "\n")
         tablero[fila, col] = var.disparo_al_mar
         
     elif tablero[fila, col] == var.barco_tocado or tablero[fila, col] == var.disparo_al_mar:
-        print("¡Ya has disparado en estas coordenadas! Un poco de concentración, please")
+        print("Ya has disparado en estas coordenadas! Un poco de concentracion please", "\n")
         disparo(jugador, tablero)
         
 def menu(): #función que declara un menú para que el jugador humano decida qué hacer durante su turno
@@ -46,19 +43,19 @@ def menu(): #función que declara un menú para que el jugador humano decida qu�
           "1. Disparar", "\n",
           "2. Mirar tu tablero", "\n",
           "3. Mirar tablero rival", "\n",
-          "4. Exit")
-
+          "4. Mirar tablero visible de mis attaques", "\n",
+          "5. Exit")
+    
 def fin_juego(tablero1: cl.Tablero, tablero2: cl.Tablero):#función para declarar cuándo el juego ha terminado(es decir, si hay barcos en el tablero del jugador humano, significa que ha ganado la partida, si no es que ha ganado la máquina)
     if var.barco in tablero1:
-        print("Enhorabuena! Has ganado")
+        print("Enhorabuena! Has ganado", "\n")
         exit() 
     else:
-        print("Lo siento. Has perdido")
+        print("Lo siento. Has perdido", "\n")
         exit() 
         
 def exit():
     print("Gracias por haber jugado conmigo. Hasta la proxima.")
-
 
 def crear_flota(tablero: cl.Tablero):
     flota = []
@@ -72,8 +69,8 @@ def crear_flota(tablero: cl.Tablero):
 def situar_barco(bote: cl.Barco, tablero: cl.Tablero):
     situado = False    
     while not situado:
-        fila = random.randint(0,medida_tablero-1)
-        col = random.randint(0,medida_tablero-1)
+        fila = random.randint(0,var.medida_tablero-1)
+        col = random.randint(0,var.medida_tablero-1)
         orientacion = random.choice(var.orientaciones)
 
         if tablero[fila, col] == var.agua:
@@ -83,7 +80,7 @@ def situar_barco(bote: cl.Barco, tablero: cl.Tablero):
                     continue
                 else: #comprobar si el barco puede situarse
                     for celda in range(bote.len):
-                        if tablero[fila-celda, col] == var.agua:
+                        if tablero[fila-celda, col] == var.agua: # aqui es decir si las filas son aguas (entonces no hay barcos tampoco)
                             situado = True
                             continue
                         else:
@@ -113,7 +110,7 @@ def situar_barco(bote: cl.Barco, tablero: cl.Tablero):
                             bote.coordenadas.append([fila, col+celda]) 
                         break
                     
-            elif orientacion == 'S':
+            if orientacion == 'S':
                 
                 if fila + (bote.len -1) > var.medida_tablero-1:
                     continue

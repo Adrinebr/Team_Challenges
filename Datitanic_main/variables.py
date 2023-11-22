@@ -1,6 +1,6 @@
 #Variables constantes del juego que serán utilizadas para el diseño de programación del juego
 agua = " "
-barco = 'B'
+barco = 'O'
 barco_tocado = "X"
 disparo_al_mar = '~'
 medida_tablero= 10
