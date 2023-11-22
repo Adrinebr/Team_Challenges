@@ -4,7 +4,8 @@
 ### Autores
 * [Adrián Nebril](https://github.com/Adrinebr)
 * [Samuel Seuru](https://github.com/SamuelSeuru)
-* [Ángela López] (https://github.com/AngelaLM14)
+* [Ángela López](https://github.com/AngelaLM14)
+
 
 
 **Primer proyecto por equipos para el Bootcamp de Data Science.**
