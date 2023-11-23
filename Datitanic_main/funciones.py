@@ -42,7 +42,7 @@ def menu(): #función que declara un menú para que el jugador humano decida qu�
     print("Opciones de juego:", "\n",
           "1. Disparar", "\n",
           "2. Mirar tu tablero", "\n",
-          "3. Mirar tablero rival", "\n",
+          "3. Mirar tablero rival(intentar no mirar)", "\n",
           "4. Mirar tablero visible de mis attaques", "\n",
           "5. Exit")
     
