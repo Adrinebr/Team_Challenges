@@ -242,7 +242,9 @@ def plot_features_num_regression(df, target_col="", columns=[], umbral_corr=0, p
         columns = df.select_dtypes(include=[np.number]).columns.tolist()
 
     # Pintar pairplot
-    sns.pairplot(df[columns + [target_col]])
+    if target_col not in columns: 
+        columns.append(target_col)
+    sns.pairplot(df[columns])
     plt.show()
     
     return columns
