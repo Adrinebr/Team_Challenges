@@ -4,8 +4,7 @@ import seaborn as sns
 import numpy as np
 import pandas as pd
 
-from scipy.stats import pearsonr
-
+from scipy.stats import pearsonr, chi2_contingency, f_oneway
 
 ###  DESCRIBE_DF 
 
@@ -247,4 +246,141 @@ def plot_features_num_regression(df, target_col="", columns=[], umbral_corr=0, p
     sns.pairplot(df[columns])
     plt.show()
     
+    return columns
+
+### GET_FEATURES_CAT_REGRESSION
+
+def get_features_cat_regression(df, target_col, pvalue=0.05):
+    """
+    Devuelve una lista con las columnas categóricas del dataframe cuyo test de relación con
+    la columna designada por 'target_col' supere en confianza estadística el test de relación adecuado.
+
+    Argumentos:
+    df: Dataframe para analizar.
+    target_col (str): Columna target del modelo de regresión.
+    pvalue (float): Umbral de significación útil para el test de hipótesis. Por defecto es 0.05.
+
+    Retorna:
+    list: Una lista con las columnas categóricas del dataframe cuyo test de relación con 'target_col'
+          sea significativo.
+    """
+
+    # Comprobar los valores de entrada
+    if target_col not in df.columns:
+        print(f"Error: La columna '{target_col}' no existe en el dataframe.")
+        return None
+
+    if target_col not in df.select_dtypes(include=[np.number]).columns:
+        print(f"Error: La columna '{target_col}' no es numérica en el dataframe.")
+        return None
+
+    # A través de la función tipifica_variables se obtiene el tipo sugerido de target_col
+    tipo_sugerido = tipifica_variables(df[[target_col]], 5, 10.0)['tipo_sugerido'][0]
+
+    # Verificar si target_col es una variable numérica continua o discreta con alta cardinalidad
+    if tipo_sugerido != "Numerica Continua" and tipo_sugerido != "Numerica Discreta":
+        print(f"Error: La columna '{target_col}' no es una variable numérica continua o discreta con alta cardinalidad.")
+        return None
+
+    if not (0 <= pvalue <= 1):
+        print("Error: El valor de pvalue debe estar entre 0 y 1.")
+        return None
+
+    # Se obtienen las columnas categóricas
+    cat_columns = df.select_dtypes(include=['object']).columns
+
+    # Se inicia la  lista para almacenar las columnas categóricas relevantes
+    relevant_cat_columns = []
+
+    # Se realiza el test de relación adecuado para cada columna categórica
+    for column in cat_columns:
+        contingency_table = pd.crosstab(df[column], df[target_col])
+        
+        # Comprobar si se debe usar el test de chi-cuadrado o el test ANOVA
+        if tipo_sugerido == "Numerica Continua":
+            stat, p_value, _, _ = chi2_contingency(contingency_table)
+        else:
+            stat, p_value = f_oneway(*(df[df[column] == value][target_col] for value in df[column].unique()))
+        
+        # Verificar si el p-value es menor o igual al umbral especificado
+        if p_value <= pvalue:
+            relevant_cat_columns.append(column)
+
+    return relevant_cat_columns
+
+### PLOT_FEATURES_CAT_REGRESSION
+ 
+def plot_features_cat_regression(df, target_col="", columns=[], pvalue=0.05, with_individual_plot=False):
+    """
+    Pinta histogramas agrupados y devuelve las columnas relevantes según el test de relación con la columna target_col.
+
+    Argumentos:
+    df: El dataframe inicial con las variables.
+    target_col (str): Nombre de la columna que será el target del modelo de regresión.
+    columns (list): Lista de features cuyos histogramas agrupados serán pintados.
+    pvalue (float): Umbral de significación útil para el test de hipótesis. Por defecto es 0.05.
+    with_individual_plot (bool): Booleano que indica si se debe pintar un histograma individual para cada columna categórica.
+
+    Retorna:
+    list: Una lista con las columnas categóricas del dataframe cuyo test de relación con 'target_col' sea significativo.
+    """
+    
+    # Comprobaciones de los valores de entrada
+    if target_col not in df.columns:
+        raise ValueError(f"La columna '{target_col}' no existe en el dataframe.")
+        
+    if target_col not in df.select_dtypes(include=[np.number]).columns:
+        raise ValueError(f"La columna '{target_col}' no es numérica en el dataframe.")
+        
+    tipo_sugerido = tipifica_variables(df[[target_col]], 5, 10.0)['tipo_sugerido'][0]
+
+    if tipo_sugerido not in {"Numerica Continua", "Numerica Discreta"}:
+        raise ValueError(f"La columna '{target_col}' no es una variable numérica continua o discreta con alta cardinalidad.")
+
+    if not (0 <= pvalue <= 1):
+        raise ValueError("El valor de pvalue debe estar entre 0 y 1.")
+
+    # Obtener las columnas categóricas relevantes usando la función get_features_cat_regression
+    relevant_cat_columns = get_features_cat_regression(df, target_col, pvalue)
+
+    if relevant_cat_columns is None:
+        return None
+
+    if not columns:
+        columns = relevant_cat_columns
+
+    for column in columns:
+        if column == target_col:
+            continue
+
+        # Calcular el test de relación adecuado para la columna categórica y target_col
+        contingency_table = pd.crosstab(df[column], df[target_col])
+
+        # Verificar si se debe usar el test de chi-cuadrado o el test ANOVA
+        if tipo_sugerido == "Numerica Continua":
+            stat, p_value, _, _ = chi2_contingency(contingency_table)
+        else:
+            stat, p_value = f_oneway(*(df[df[column] == value][target_col] for value in df[column].unique()))
+
+        # Verificar si el p-value es menor o igual al umbral especificado
+        if p_value <= pvalue:
+            # Pintar histograma agrupado
+            plt.figure(figsize=(10, 6))
+            ax = sns.histplot(data=df, x=target_col, hue=column, multiple="stack", palette="tab10")
+            plt.title(f"Histograma agrupado de {column} con respecto a {target_col}", fontsize=14)
+            plt.xlabel(target_col, fontsize=12)
+            plt.ylabel("Frecuencia", fontsize=12)
+            plt.xticks(fontsize=10)
+            plt.yticks(fontsize=10)
+            
+            # Crear leyenda personalizada con nombres de categorías y colores
+            legend_labels = [
+                f"{category} ({color})"
+                for category, color in zip(df[column].unique(), ax.get_legend().get_texts())
+            ]
+            ax.legend(legend_labels, title=column, fontsize=10, title_fontsize=10)
+            
+            plt.tight_layout()
+            plt.show()
+
     return columns

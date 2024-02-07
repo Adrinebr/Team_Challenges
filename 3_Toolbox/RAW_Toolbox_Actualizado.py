@@ -1,10 +1,10 @@
-
 import matplotlib.pyplot as plt
 import seaborn as sns
 import numpy as np
 import pandas as pd
 
 from scipy.stats import pearsonr
+from scipy.stats import chi2_contingency, f_oneway
 
 
 ###  DESCRIBE_DF 
@@ -250,11 +250,6 @@ def plot_features_num_regression(df, target_col="", columns=[], umbral_corr=0, p
     return columns
 
 ### GET_FEATURES_CAT_REGRESSION
-import numpy as np
-from scipy.stats import chi2_contingency, f_oneway
-
-import numpy as np
-from scipy.stats import chi2_contingency, f_oneway
 
 def get_features_cat_regression(df, target_col, pvalue=0.05):
     """
